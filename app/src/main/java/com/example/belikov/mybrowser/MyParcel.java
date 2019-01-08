@@ -6,6 +6,10 @@ import java.util.Set;
 class MyParcel implements Parcelable {
     private String[] bookmarksArr;
 
+    public String[] getBookmarksArr() {
+        return bookmarksArr;
+    }
+
     protected MyParcel(android.os.Parcel in) {
 
         bookmarksArr = in.createStringArray();

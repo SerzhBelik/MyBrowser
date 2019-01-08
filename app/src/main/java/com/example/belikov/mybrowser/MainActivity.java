@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editorBookmarks;
 
     private static String HOME_PAGE = "home page";
-    private static String BOOKMARKS = "bookmarks";
+    public static String BOOKMARKS = "bookmarks";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String[] bookmarksArr = new String[bookmarks.size()];
-            MyParcel myParcel = new MyParcel(bookmarks.toArray(bookmarksArr));
+            bookmarks.toArray(bookmarksArr);
+            MyParcel myParcel = new MyParcel(bookmarksArr);
             Intent intent = new Intent(MainActivity.this, BookmarksActivity.class);
             intent.putExtra(BOOKMARKS, myParcel);
             startActivity(intent);
