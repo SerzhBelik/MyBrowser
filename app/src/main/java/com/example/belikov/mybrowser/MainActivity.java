@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPref.contains(HOME_PAGE)){
             homePage = sharedPref.getString(HOME_PAGE, "https://");
+            currentPage = homePage;
         }
 
         if (sharedPref.contains(BOOKMARKS)){

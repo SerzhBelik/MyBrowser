@@ -1,7 +1,6 @@
 package com.example.belikov.mybrowser;
 
 import android.os.Parcelable;
-import java.util.Set;
 
 class MyParcel implements Parcelable {
     private String[] bookmarksArr;

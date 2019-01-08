@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -30,6 +32,15 @@ public class BookmarksActivity extends AppCompatActivity {
         data = parcel.getBookmarksArr();
         BookmarksAdapter adapter = new BookmarksAdapter(data);
         recyclerView.setAdapter(adapter);
+
+        adapter.SetOnItemClickListener(new BookmarksAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                TextView textView = (TextView)view;
+                String text = textView.getText().toString();
+                Toast.makeText(BookmarksActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     }
 

@@ -9,17 +9,27 @@ import android.widget.TextView;
 // Адаптер
 public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.ViewHolder> {
     private String[] data;
+    private OnItemClickListener itemClickListener;
 
     // Этот класс хранит связь между данными и элементами View
     // Сложные данные могут потребовать несколько View на
     // Один пункт списка
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         // Каждый пункт списка в нашем случае это строка
         public TextView textView;
 
         public ViewHolder(TextView v) {
             super(v);
             textView = v;
+
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (itemClickListener != null) {
+                        itemClickListener.onItemClick(v, getAdapterPosition());
+                    }
+                }
+            });
         }
     }
 
@@ -58,5 +68,15 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.View
     public int getItemCount() {
         return data.length;
     }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view , int position);
+    }
+
+    // Сеттер слушателя нажатий
+    public void SetOnItemClickListener(OnItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
+    }
+
 }
 
