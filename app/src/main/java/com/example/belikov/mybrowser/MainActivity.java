@@ -1,5 +1,7 @@
 package com.example.belikov.mybrowser;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,10 +17,14 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String homePage;
+    private String homePage = "https://google.ru";
     private Button go;
     private EditText editText;
     private OkHttpRequester requester;
+    private SharedPreferences sharedPref;
+    private String currentPage;
+
+    private static String HOME_PAGE = "home page";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String nextPage = "http://"  + editText.getText().toString();
                 requester.run(nextPage);
+                currentPage = nextPage;
                 Toast.makeText(MainActivity.this, "GO!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -57,9 +64,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        homePage = "https://google.ru";
         go = findViewById(R.id.go);
         editText = findViewById(R.id.uri);
+        sharedPref = getSharedPreferences(HOME_PAGE, Context.MODE_PRIVATE);
+
+        if (sharedPref.contains(HOME_PAGE)){
+            homePage = sharedPref.getString(HOME_PAGE, "https://");
+        }
     }
 
     @Override
@@ -82,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.add_bookmark) {
+            return true;
+        }
+
+        if (id == R.id.make_home_page) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(HOME_PAGE, currentPage);
+            editor.commit();
             return true;
         }
 

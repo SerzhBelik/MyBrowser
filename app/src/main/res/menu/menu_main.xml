@@ -13,4 +13,10 @@
         android:orderInCategory="100"
         android:title="Add bookmark"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/make_home_page"
+        android:orderInCategory="100"
+        android:title="Make home page"
+        app:showAsAction="never" />
 </menu>
