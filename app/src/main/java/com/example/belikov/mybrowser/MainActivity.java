@@ -8,8 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String homePage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +21,26 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        homePage = "https://google.ru";
+
+
+        // Получим наш элемент WebView
+        final WebView page = findViewById(R.id.browse);
+
+        // создадим запрос при помощи нашего класса Requester, параметром зададим анонимный класс
+        // с обратным вызовом по завершении работы (этот вариант хоть и находится в потоке UI,
+        // но все равно сделаем через обратный вызов, потому что нам в дальнейшем придется
+        // запускать эту задачу в фоне)
+        OkHttpRequester requester = new OkHttpRequester(new OkHttpRequester.OnResponseCompleted() {
+            // Этот метод будет вызываться по завершении закачки страницы
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onCompleted(String content) {
+                page.loadData(content, "text/html; charset=utf-8", "utf-8");
             }
         });
+
+        // Сделать запрос
+        requester.run(homePage); // загрузим нашу страницу
     }
 
     @Override
