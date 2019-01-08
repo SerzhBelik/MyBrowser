@@ -1,6 +1,9 @@
 package com.example.belikov.mybrowser;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity {
 
     private String homePage = "https://google.ru";
@@ -23,8 +29,12 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpRequester requester;
     private SharedPreferences sharedPref;
     private String currentPage;
+    private Set<String> bookmarks = new HashSet<>();
+    private SharedPreferences.Editor editorHomePage;
+    private SharedPreferences.Editor editorBookmarks;
 
     private static String HOME_PAGE = "home page";
+    private static String BOOKMARKS = "bookmarks";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         if (sharedPref.contains(HOME_PAGE)){
             homePage = sharedPref.getString(HOME_PAGE, "https://");
         }
+
+        if (sharedPref.contains(BOOKMARKS)){
+            bookmarks = sharedPref.getStringSet(BOOKMARKS, new HashSet<String>());
+        }
     }
 
     @Override
@@ -89,17 +103,36 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.open_bookmark) {
+            if (bookmarks.isEmpty()){
+                Toast.makeText(MainActivity.this, "You have no bookmarks yet!", Toast.LENGTH_SHORT).show();
+                return  true;
+            }
+
+            String[] bookmarksArr = new String[bookmarks.size()];
+            MyParcel myParcel = new MyParcel(bookmarks.toArray(bookmarksArr));
+            Intent intent = new Intent(MainActivity.this, BookmarksActivity.class);
+            intent.putExtra(BOOKMARKS, myParcel);
+            startActivity(intent);
+
+
             return true;
         }
 
         if (id == R.id.add_bookmark) {
+            if (bookmarks.contains(currentPage)){
+                Toast.makeText(MainActivity.this, "This bookmark is already exist!", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            bookmarks.add(currentPage);
+            Toast.makeText(MainActivity.this, "Bookmark created!", Toast.LENGTH_SHORT).show();
+
             return true;
         }
 
         if (id == R.id.make_home_page) {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(HOME_PAGE, currentPage);
-            editor.commit();
+            editorHomePage = sharedPref.edit();
+            editorHomePage.putString(HOME_PAGE, currentPage);
+            editorHomePage.commit();
             return true;
         }
 
@@ -107,4 +140,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        editorBookmarks = sharedPref.edit();
+        editorBookmarks.putStringSet(BOOKMARKS, bookmarks);
+        editorBookmarks.apply();
+        super.onDestroy();
+    }
 }
