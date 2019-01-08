@@ -9,21 +9,21 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private String homePage;
+    private Button go;
+    private EditText editText;
+    private OkHttpRequester requester;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        homePage = "https://google.ru";
-
-
+        initialize();
         // Получим наш элемент WebView
         final WebView page = findViewById(R.id.browse);
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // с обратным вызовом по завершении работы (этот вариант хоть и находится в потоке UI,
         // но все равно сделаем через обратный вызов, потому что нам в дальнейшем придется
         // запускать эту задачу в фоне)
-        OkHttpRequester requester = new OkHttpRequester(new OkHttpRequester.OnResponseCompleted() {
+        requester = new OkHttpRequester(new OkHttpRequester.OnResponseCompleted() {
             // Этот метод будет вызываться по завершении закачки страницы
             @Override
             public void onCompleted(String content) {
@@ -41,6 +41,25 @@ public class MainActivity extends AppCompatActivity {
 
         // Сделать запрос
         requester.run(homePage); // загрузим нашу страницу
+
+
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String nextPage = "http://"  + editText.getText().toString();
+                requester.run(nextPage);
+                Toast.makeText(MainActivity.this, "GO!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initialize() {
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        homePage = "https://google.ru";
+        go = findViewById(R.id.go);
+        editText = findViewById(R.id.uri);
     }
 
     @Override
@@ -58,10 +77,16 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.open_bookmark) {
+            return true;
+        }
+
+        if (id == R.id.add_bookmark) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

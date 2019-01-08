@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.belikov.mybrowser.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/open_bookmark"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Open bookmark"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/add_bookmark"
+        android:orderInCategory="100"
+        android:title="Add bookmark"
         app:showAsAction="never" />
 </menu>
