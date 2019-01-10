@@ -22,14 +22,11 @@ public class BookmarksActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
-        // Эта установка служит для повышения производительности системы
         recyclerView.setHasFixedSize(true);
 
-        // Будем работать со встроенным менеджером
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // Установим адаптер
         MyParcel parcel = getIntent().getParcelableExtra(MainActivity.BOOKMARKS);
         data = parcel.getBookmarksArr();
         BookmarksAdapter adapter = new BookmarksAdapter(data);

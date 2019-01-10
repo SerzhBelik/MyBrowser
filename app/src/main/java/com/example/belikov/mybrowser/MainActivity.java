@@ -1,13 +1,9 @@
 package com.example.belikov.mybrowser;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -45,13 +41,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             currentPage = savedInstanceState.getString(CURRENT_PAGE);
         }
-        // Получим наш элемент WebView
         final WebView page = findViewById(R.id.browse);
 
-        // создадим запрос при помощи нашего класса Requester, параметром зададим анонимный класс
-        // с обратным вызовом по завершении работы (этот вариант хоть и находится в потоке UI,
-        // но все равно сделаем через обратный вызов, потому что нам в дальнейшем придется
-        // запускать эту задачу в фоне)
         requester = new OkHttpRequester(new OkHttpRequester.OnResponseCompleted() {
             // Этот метод будет вызываться по завершении закачки страницы
             @Override
@@ -60,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Сделать запрос
-        requester.run(currentPage); // загрузим нашу страницу
-
+        requester.run(currentPage);
 
         go.setOnClickListener(new View.OnClickListener() {
             @Override
