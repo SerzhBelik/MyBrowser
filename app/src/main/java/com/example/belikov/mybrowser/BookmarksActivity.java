@@ -1,6 +1,7 @@
 package com.example.belikov.mybrowser;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +13,8 @@ import android.widget.Toast;
 
 public class BookmarksActivity extends AppCompatActivity {
     private String[] data;
-
+    public static String BOOKMARK = "bookmark";
+    private String chooseBookmark;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +39,11 @@ public class BookmarksActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 TextView textView = (TextView)view;
-                String text = textView.getText().toString();
-                Toast.makeText(BookmarksActivity.this, text, Toast.LENGTH_SHORT).show();
+                chooseBookmark = textView.getText().toString();
+                Toast.makeText(BookmarksActivity.this, chooseBookmark, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(BookmarksActivity.this, MainActivity.class);
+                intent.putExtra(BOOKMARK, chooseBookmark);
+                startActivity(intent);
             }
         });
     }

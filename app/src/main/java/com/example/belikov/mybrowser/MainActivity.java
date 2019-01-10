@@ -33,13 +33,18 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editorHomePage;
     private SharedPreferences.Editor editorBookmarks;
 
-    private static String HOME_PAGE = "home page";
+    public static String HOME_PAGE = "home page";
+    public static String CURRENT_PAGE = "current page";
     public static String BOOKMARKS = "bookmarks";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialize();
+
+        if (savedInstanceState != null){
+            currentPage = savedInstanceState.getString(CURRENT_PAGE);
+        }
         // Получим наш элемент WebView
         final WebView page = findViewById(R.id.browse);
 
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Сделать запрос
-        requester.run(homePage); // загрузим нашу страницу
+        requester.run(currentPage); // загрузим нашу страницу
 
 
         go.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initialize() {
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         go = findViewById(R.id.go);
         editText = findViewById(R.id.uri);
@@ -80,11 +85,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPref.contains(HOME_PAGE)){
             homePage = sharedPref.getString(HOME_PAGE, "https://");
-            currentPage = homePage;
         }
+
+        currentPage = homePage;
 
         if (sharedPref.contains(BOOKMARKS)){
             bookmarks = sharedPref.getStringSet(BOOKMARKS, new HashSet<String>());
+        }
+
+        if (getIntent().getStringExtra(BookmarksActivity.BOOKMARK) != null){
+            homePage = getIntent().getStringExtra(BookmarksActivity.BOOKMARK);
         }
     }
 
@@ -141,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(CURRENT_PAGE, currentPage);
+    }
 
     @Override
     protected void onDestroy() {
